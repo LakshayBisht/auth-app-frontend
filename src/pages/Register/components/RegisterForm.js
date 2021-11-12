@@ -1,0 +1,105 @@
+import React from 'react';
+import {TextInput, Button} from 'grommet';
+import {Formik} from 'formik';
+import * as Yup from 'yup';
+
+import FormField from 'core/components/FormField';
+
+const RegisterForm = ({registerClickHandler}) => {
+	const validationSchema = Yup.object().shape({
+		username: Yup.string().required('Name is required'),
+		email: Yup.string().email('Invalid email').required('Email is required'),
+		password: Yup.string()
+			.min(6, 'Minimum 6 Characters')
+			.required('Password is Required'),
+	});
+
+	const onSubmit = async (values, {setSubmitting, setErrors}) => {
+		console.log(values);
+		setErrors({});
+		setSubmitting(true);
+		try {
+			await registerClickHandler(values);
+		} catch (e) {
+			if (e.errors) setErrors(e.errors);
+		}
+		setSubmitting(false);
+	};
+
+	return (
+		<Formik
+			initialValues={{
+				username: '',
+				email: '',
+				password: '',
+			}}
+			validationSchema={validationSchema}
+			// onSubmit={(props) => {
+			// 	console.log(props.values);
+			// 	onSubmit(props);
+			// }}>
+			onSubmit={onSubmit}>
+			{({
+				values,
+				errors,
+				touched,
+				handleChange,
+				handleBlur,
+				handleSubmit,
+				isSubmitting,
+			}) => (
+				<form onSubmit={handleSubmit}>
+					<FormField
+						name='username'
+						label='Full Name'
+						error={touched.username && errors.username}>
+						<TextInput
+							name='username'
+							onChange={handleChange}
+							onBlur={handleBlur}
+							value={values.username}
+						/>
+					</FormField>
+					<FormField
+						name='email'
+						label='Your Email'
+						error={touched.email && errors.email}>
+						<TextInput
+							type='email'
+							name='email'
+							onChange={handleChange}
+							onBlur={handleBlur}
+							value={values.email}
+						/>
+					</FormField>
+					<FormField
+						name='password'
+						label='Password'
+						required
+						error={touched.password && errors.password}>
+						<TextInput
+							type='password'
+							name='password'
+							onChange={handleChange}
+							onBlur={handleBlur}
+							value={values.password}
+						/>
+					</FormField>
+					<Button
+						size='large'
+						type='submit'
+						fill='horizontal'
+						alignSelf='center'
+						margin={{top: 'medium'}}
+						label={isSubmitting ? 'Signing Up...' : 'Sign Up'}
+						disabled={isSubmitting}
+						primary
+						color='#87CEEB'
+					/>
+				</form>
+			)}
+		</Formik>
+	);
+};
+
+export default RegisterForm;
