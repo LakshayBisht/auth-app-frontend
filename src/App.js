@@ -12,6 +12,7 @@ import {Grommet, grommet} from 'grommet';
 import Login from 'pages/Login';
 import Register from 'pages/Register';
 import Home from 'pages/Home';
+import NotFound from 'pages/NotFound';
 
 function App() {
 	return (
@@ -24,6 +25,7 @@ function App() {
 					<PublicOnlyRoute exact path='/login' component={Login} />
 					<PublicOnlyRoute exact path='/register' component={Register} />
 					<PrivateRoute exact path='/home' component={Home} />
+					<Route component={() => <NotFound />} />
 				</Switch>
 			</Router>
 		</Grommet>
